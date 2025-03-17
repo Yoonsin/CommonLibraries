@@ -1,5 +1,5 @@
 # add source files to library
-add_library(IrrlichtExtensions AggregateGUIElement.cpp
+add_library(IrrlichtExtensions STATIC AggregateGUIElement.cpp
         AggregatableGUIElementAdapter.cpp AggregateSkinExtension.cpp BeautifulGUIButton.cpp
         BeautifulGUIImage.cpp BeautifulGUIText.cpp ChooseFromListDialog.cpp CMBox.cpp ColorSelector.cpp
         ConstantLanguagePhrases.cpp CommonIniEditor.cpp Drawer2D.cpp

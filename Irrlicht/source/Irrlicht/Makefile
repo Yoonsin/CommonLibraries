@@ -69,7 +69,7 @@ emscripten: EMSCRIPTEN=1
 ###############
 #Compiler flags
 
-CXXINCS = -I../../include -Izlib -Ijpeglib -Ilibpng
+CXXINCS = -I../../include -Izlib -Ijpeglib -Ilibpng -I/usr/include/opengl -I"C:\glew\include"
 CPPFLAGS += $(CXXINCS) -DIRRLICHT_EXPORTS=1
 CXXFLAGS += -Wall -pipe -fno-exceptions -fno-rtti -fstrict-aliasing
 #CXXFLAGS += -std=gnu++11 -U__STRICT_ANSI__

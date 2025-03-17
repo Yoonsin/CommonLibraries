@@ -30,7 +30,7 @@
 /*#elif defined(__unix__)*/
 /*	#define OTHER_UNIX_PLATFORM*/
 #else
-	#error "No compatible platform detected"
+	//#error "No compatible platform detected"
 	#define PLATFORM_STRING "Unknown"
 #endif
 

@@ -20,10 +20,12 @@ OPTIM = $(USEROPTIM) -O3 -DNDEBUG
 endif
 
 ifndef CPPVERSION
-CPPVERSION = -std=c++11
+CPPVERSION = -std=gnu++11#c++11
 endif
 
 CPPFLAGS += -fstrict-aliasing -fexceptions -frtti -Wall $(CPPVERSION)
+CPPFLAGS += -I/usr/include -I/usr/local/include
+LDFLAGS += -lz
 
 all_lib: build_deps $(FINALSTATICLIB)
 

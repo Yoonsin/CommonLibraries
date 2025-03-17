@@ -11,6 +11,7 @@ CFLAGS = $(CPPFLAGS)
 STATIC_LIB = libCommon.a
 USEROPTIM = 
 
+
 ifeq ($(NO_ZLIB),1)
 CPPFLAGS += -DNO_ZLIB=$(NO_ZLIB)
 endif

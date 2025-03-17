@@ -896,7 +896,12 @@ precision will be lower but speed higher. currently X86 only
 #ifdef IRRLICHT_EXPORTS
 #define IRRLICHT_API __declspec(dllexport)
 #else
+#if __ANDROID__
+#define IRRLICHT_API 
+#else
 #define IRRLICHT_API __declspec(dllimport)
+#endif //__ANDROID
+
 #endif // IRRLICHT_EXPORT
 #else
 #define IRRLICHT_API
@@ -906,8 +911,13 @@ precision will be lower but speed higher. currently X86 only
 #if defined(_STDCALL_SUPPORTED)
 #define IRRCALLCONV __stdcall
 #else
+#if __ANDROID__
+#define IRRCALLCONV 
+#else
 #define IRRCALLCONV __cdecl
+#endif //__ANDROID__
 #endif // STDCALL_SUPPORTED
+
 
 #else // _IRR_WINDOWS_API_
 

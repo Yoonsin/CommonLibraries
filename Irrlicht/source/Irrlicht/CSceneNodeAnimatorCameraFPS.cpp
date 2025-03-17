@@ -138,6 +138,9 @@ void CSceneNodeAnimatorCameraFPS::animateNode(ISceneNode* node, u32 timeMs)
 	if(smgr && smgr->getActiveCamera() != camera)
 		return;
 
+
+
+
 	if ( CursorControl )
 		CursorPos = CursorControl->getRelativePosition();
 
@@ -147,8 +150,8 @@ void CSceneNodeAnimatorCameraFPS::animateNode(ISceneNode* node, u32 timeMs)
 
 	// Update rotation
 	core::vector3df target = (camera->getTarget() - camera->getAbsolutePosition());
-	core::vector3df relativeRotation = target.getHorizontalAngle();
-
+	relativeRotation = target.getHorizontalAngle();
+	
 	if (CursorControl)
 	{
 		bool reset = false;
@@ -205,6 +208,28 @@ void CSceneNodeAnimatorCameraFPS::animateNode(ISceneNode* node, u32 timeMs)
 		relativeRotation.X = MaxVerticalAngle;
 	}
 
+	// 터치 기반 카메라 회전 처리
+	if (isRotate)
+	{
+		core::position2d<s32> deltaTouchPoint = TouchStartPos - TouchCurrentPos;
+		TouchStartPos = TouchCurrentPos; // 현재 터치 위치 업데이트
+
+		relativeRotation.Y -= (f32)deltaTouchPoint.X * RotateSpeed;
+		relativeRotation.X -= (f32)deltaTouchPoint.Y * RotateSpeed * MouseYDirection;
+
+		// 최대/최소 각도 제한
+		if (relativeRotation.X > MaxVerticalAngle * 2 &&
+			relativeRotation.X < 360.0f - MaxVerticalAngle)
+		{
+			relativeRotation.X = 360.0f - MaxVerticalAngle;
+		}
+		else if (relativeRotation.X > MaxVerticalAngle &&
+			relativeRotation.X < 360.0f - MaxVerticalAngle)
+		{
+			relativeRotation.X = MaxVerticalAngle;
+		}
+	}
+
 	// set target
 	core::vector3df pos = camera->getPosition();
 	target.set(0,0, core::max_(1.f, pos.getLength()));	// better float precision than (0,0,1) in target-pos calculation in camera
@@ -214,6 +239,7 @@ void CSceneNodeAnimatorCameraFPS::animateNode(ISceneNode* node, u32 timeMs)
 	mat.setRotationDegrees(core::vector3df(relativeRotation.X, relativeRotation.Y, 0));
 	mat.transformVect(target);
 
+	//target이 목표임
 	if (NoVerticalMovement)
 	{
 		mat.setRotationDegrees(core::vector3df(0, relativeRotation.Y, 0));

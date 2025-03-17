@@ -1,5 +1,7 @@
 #include <math.h>
 #include <time.h>
+#include <chrono>
+#include <thread>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -63,16 +65,19 @@ void delay(uint32_t ms){
 	#if _WIN32
 	Sleep(ms);
 	#else
-	usleep(ms*1000);
+	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+	//usleep(ms*1000);
 	#endif
 }
 
 void delayMicroseconds(uint32_t us){
 	#if _WIN32
-	delay(us/1000);
+	Sleep(us/1000);
+	//delay(us/1000);
 	#warning "Proper implementation of delayMicroseconds missing"
 	#else
-	usleep(us);
+	std::this_thread::sleep_for(std::chrono::milliseconds(us/1000));
+	//usleep(us);
 	#endif
 }
 

@@ -143,6 +143,12 @@ namespace scene
 			PauseTimeStart = 0;
 		}
 
+		bool isRotate = false;
+		core::position2d<irr::s32> TouchStartPos;
+		core::position2d<irr::s32> TouchCurrentPos;
+		core::vector3df relativeRotation;
+		core::vector3df startRotation;
+
 	protected:
 
 		/** This method can be used by clone() implementations of

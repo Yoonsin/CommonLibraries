@@ -226,8 +226,8 @@ void FileSystemItemOrganizer::updateContent(){
 			if(cleanFileName!=".." && cleanFileName!="."){//don't include parent and this directory
 				uint64_t fileSize = 0;
 				time_t modificationTime = 0;
-				struct stat64 s;
-				if(stat64(filename.c_str(), &s)==0){
+				struct stat s;
+				if(stat(filename.c_str(), &s)==0){
 					#ifdef _WIN32
 					modificationTime = s.st_mtime;
 					#elif defined(__APPLE__)

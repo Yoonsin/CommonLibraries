@@ -36,6 +36,8 @@ class JoyStickElement : public IAggregatableGUIElement{
 	
 	//! 0-1 for 0-100%
 	void setUsableArea(irr::f32 usableArea);
+
+	void CreateKeyEvent(irr::SEvent event, irr::EKEY_CODE keyCode, bool isPressedDown);
 	
 };
 

@@ -5,6 +5,9 @@
 
 static std::set<void*> extendableSkins;
 
+ISkinExtension::ISkinExtension() = default;
+ISkinExtension::~ISkinExtension() = default;
+
 bool isExtendableSkin(void* something){
 	return extendableSkins.find(something)!=extendableSkins.end();
 }

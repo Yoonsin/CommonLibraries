@@ -16,7 +16,8 @@ class ISkinExtension{
 
 	public:
 	
-	virtual ~ISkinExtension(){}
+	ISkinExtension();
+	~ISkinExtension();
 	
 	virtual const std::string& getName() = 0;
 

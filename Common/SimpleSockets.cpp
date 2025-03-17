@@ -5,17 +5,19 @@
 #include <iostream>
 #include <sstream>
 
+
 #if SIMPLESOCKETS_WIN
 //TODO
 #else
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
-#include <netdb.h>
 #include <net/if.h>
 #endif
 
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/select.h>
+#include <netdb.h>
 #include <fcntl.h>
 
 #if defined(__ANDROID__)// || defined(__linux__)
@@ -25,6 +27,10 @@
 
 #if !defined(USE_ANDROID_BRD_ADDR_WORKAROUND) && !SIMPLESOCKETS_WIN
 #include <ifaddrs.h>
+#endif
+
+#if !SIMPLESOCKETS_WIN
+#include <sys/socket.h> // for SO_REUSEPORT
 #endif
 
 #if defined(__APPLE__) || defined(MACOSX)
@@ -517,7 +523,7 @@ bool IPv4Socket::bind(int port, bool reusePort){
 		#if SIMPLESOCKETS_WIN
 		handleErrorMessage("SO_REUSEPORT not supported on windows.");
 		#else
-		if(setsockopt(socketHandle, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(enable))==-1){
+		if(setsockopt(socketHandle, SOL_SOCKET, SO_REUSEADDR /*SO_REUSEPORT*/, &enable, sizeof(enable)) == -1) {
 			handleErrorMessage();
 		}
 		#endif
@@ -694,7 +700,7 @@ bool IPv6Socket::bind(int port, bool reusePort){
 		#if SIMPLESOCKETS_WIN
 		handleErrorMessage("SO_REUSEPORT not supported on windows.");
 		#else
-		if(setsockopt(socketHandle, SOL_SOCKET, SO_REUSEPORT, (const char*)&enable, sizeof(enable))==-1){
+		if(setsockopt(socketHandle, SOL_SOCKET, SO_REUSEADDR /*SO_REUSEPORT*/, (const char*)&enable, sizeof(enable))==-1){
 			handleErrorMessage();
 		}
 		#endif
