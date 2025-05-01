@@ -138,9 +138,6 @@ void CSceneNodeAnimatorCameraFPS::animateNode(ISceneNode* node, u32 timeMs)
 	if(smgr && smgr->getActiveCamera() != camera)
 		return;
 
-
-
-
 	if ( CursorControl )
 		CursorPos = CursorControl->getRelativePosition();
 

@@ -42,24 +42,59 @@ void JoyStickElement::draw(){
 	if(isVisible() && background!=NULL && handle!=NULL){
 		IVideoDriver* driver = drawer->getDevice()->getVideoDriver();
 		rect<s32> vp = driver->getViewPort();
+
 		drawer->setTextureWrap(ETC_CLAMP, ETC_CLAMP);
 		driver->setViewPort(AbsoluteClippingRect);
+		
+		//조이스틱 전체가 그려질 사각형
 		finalRect = maintainAspectRatio?makeXic(AbsoluteRect, aspectRatio):AbsoluteRect;
-		drawer->draw(background, rect<s32>(finalRect.UpperLeftCorner-AbsoluteClippingRect.UpperLeftCorner, finalRect.LowerRightCorner-AbsoluteClippingRect.UpperLeftCorner));
+		
+		drawer->draw(background, 
+			rect<s32>(finalRect.UpperLeftCorner-AbsoluteClippingRect.UpperLeftCorner, 
+				finalRect.LowerRightCorner-AbsoluteClippingRect.UpperLeftCorner));
+		
+		rect<s32> tmp(finalRect.UpperLeftCorner - AbsoluteClippingRect.UpperLeftCorner, finalRect.LowerRightCorner - AbsoluteClippingRect.UpperLeftCorner);
+		drawer->draw(handle, rect<s32>(tmp.UpperLeftCorner + offset, tmp.LowerRightCorner + offset));
 		driver->setViewPort(vp);
-		drawer->draw(handle, rect<s32>(finalRect.UpperLeftCorner-vp.UpperLeftCorner+offset, finalRect.LowerRightCorner-vp.UpperLeftCorner+offset));
+
+		
+
+		/*
+		driver->setViewPort(vp);
+		drawer->draw(handle, 
+			rect<s32>(finalRect.UpperLeftCorner-vp.UpperLeftCorner+offset, 
+				finalRect.LowerRightCorner-vp.UpperLeftCorner+offset));
+		*/
+
+		// 핸들 그리기 (핸들 크기 기준으로 중심에서 offset 이동)
+		/*dimension2d<u32> handleSize = handle->getOriginalSize();
+		position2d<s32> handleCenter = finalRect.getCenter() + offset;
+
+		position2d<s32> handleUL = handleCenter - position2d<s32>(handleSize.Width / 2, handleSize.Height / 2);
+		position2d<s32> handleLR = handleUL + position2d<s32>(handleSize.Width, handleSize.Height);
+
+		drawer->draw(handle, rect<s32>(handleUL, handleLR));*/
+		
 		drawer->setTextureWrap();
+		
 		IAggregatableGUIElement::draw();//draw children etc
 	}
 }
 
 bool JoyStickElement::OnEvent(const irr::SEvent& event){
-	if(event.EventType==EET_MOUSE_INPUT_EVENT){
+	if(event.EventType==EET_MOUSE_INPUT_EVENT ){
 		
+		//중복터치로 인한 오류방지. UserData2가 2 일때만 이벤트가 적용됨. CDemo 참조 
+		if (event.UserEvent.UserData2 != 2) return false;
+
 		const SEvent::SMouseInput& m = event.MouseInput;
 		SEvent fakeKeyEvent;
 		fakeKeyEvent.EventType = EET_KEY_INPUT_EVENT;
 		fakeKeyEvent.KeyInput.Key = KEY_KEY_CODES_COUNT;
+
+		//char strDisplay2[100];
+		//sprintf(strDisplay2, "userData2 : %d", event.UserEvent.UserData2);
+		//if(drawer->getDevice()) drawer->getDevice()->getLogger()->log(strDisplay2);
 
 		if(moving){
 			if(m.Event==EMIE_MOUSE_MOVED){
@@ -116,12 +151,18 @@ bool JoyStickElement::OnEvent(const irr::SEvent& event){
 
 			}
 		}else if(m.Event==EMIE_LMOUSE_PRESSED_DOWN){
+			//moving 상태가 아니고 마우스가 눌렸다면
 			startMousePos = vector2d<s32>(m.X,m.Y);
 			vector2d<s32> delta = startMousePos-AbsoluteRect.getCenter();
+
 			moving = std::abs(delta.X)<0.5f*usableArea*AbsoluteRect.getWidth() && std::abs(delta.Y)<0.5f*usableArea*AbsoluteRect.getHeight();
+
+			char strDisplay[200];
+			sprintf(strDisplay, "x : %d , y : %d / AbsoluteRect.getWidth : %d , AbsoluteRect.getHeight : %d / isMoving : %d)", m.X, m.Y, AbsoluteRect.getWidth(), AbsoluteRect.getHeight(), moving);
+			if (drawer->getDevice()) drawer->getDevice()->getLogger()->log(strDisplay);
 		}
 
-		return true;
+		return false;
 	}
 	return false;
 }
